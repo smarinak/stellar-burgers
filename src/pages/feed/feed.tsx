@@ -1,29 +1,33 @@
+import { FC, useEffect } from 'react';
+import { useSelector, useDispatch } from '../../services/store';
+import { fetchFeed } from '../../services/slices/feedSlice';
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
-import { selectFeedLoading, selectFeedOrders } from '@selectors';
-import { getFeedsOrder } from '@actions';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 
 export const Feed: FC = () => {
   const dispatch = useDispatch();
-  const orders = useSelector(selectFeedOrders);
-  const isOrdersLoading = useSelector(selectFeedLoading);
+  const { orders, isLoading, error } = useSelector((state) => state.feed);
 
   useEffect(() => {
-    dispatch(getFeedsOrder());
+    dispatch(fetchFeed());
   }, [dispatch]);
 
-  if (isOrdersLoading) {
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
+
+  const handleGetFeeds = () => {
+    dispatch(fetchFeed());
+  };
+
+  if (isLoading) {
     return <Preloader />;
   }
 
-  return (
-    <FeedUI
-      orders={orders}
-      handleGetFeeds={() => {
-        dispatch(getFeedsOrder());
-      }}
-    />
-  );
+  if (error) {
+    return <p>Ошибка при загрузке: {error}</p>;
+  }
+
+  return <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;
 };

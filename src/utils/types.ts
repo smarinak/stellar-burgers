@@ -39,43 +39,13 @@ export type TUser = {
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
 
-export enum IngredientsType {
-  BUN = 'bun',
-  SAUSE = 'sauce',
-  MAIN = 'main'
-}
+export type TRegisterData = {
+  name: string;
+  email: string;
+  password: string;
+};
 
-export enum NameSpace {
-  INGREDIENTS = 'ingedients',
-  BURGER_CONSTRUCTOR = 'burgerConstructor',
-  USER = 'user',
-  FEED = 'feed',
-  ORDER = 'order',
-  ORDERS = 'orders'
-}
-
-export enum AppRoute {
-  Constructor = '/',
-  Login = '/login',
-  Feed = '/feed',
-  Register = '/register',
-  ResetPassword = '/reset-password',
-  ForgotPassword = '/forgot-password',
-  Profile = '/profile',
-  ProfileOrders = '/profile/orders',
-  FeedByNumber = '/feed/:number',
-  IngredientById = '/ingredients/:id',
-  ProfileOrderByNumber = '/profile/orders/:number',
-  NotFound = '*'
-}
-
-export enum AuthStatus {
-  Unknown = 'Unknown',
-  Auth = 'Auth',
-  NoAuth = 'NoAuth'
-}
-
-export enum DetailTitles {
-  Ingedients = 'Детали ингредиента',
-  Order = 'Детали заказа'
-}
+export type TLoginData = {
+  email: string;
+  password: string;
+};

@@ -1,36 +1,44 @@
-import { FC, SyntheticEvent, useState } from 'react';
+import React, { FC, SyntheticEvent, useState } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { RegisterUI } from '@ui-pages';
-import { useDispatch } from '../../services/store';
-import { registerUser } from '@actions';
-import useForm from '../../hooks/useForm';
-
-type RegisterForm = {
-  name: string;
-  email: string;
-  password: string;
-};
+import { registerUser, clearError } from '../../services/slices/authSlice';
 
 export const Register: FC = () => {
   const dispatch = useDispatch();
-  const { values, handleChange } = useForm<RegisterForm>({
-    name: '',
-    email: '',
-    password: ''
-  });
-  const { name, email, password } = values;
-  const handleSubmit = (e: SyntheticEvent) => {
+  const navigate = useNavigate();
+  const { isLoading, error, isAuth } = useSelector((state) => state.auth);
+
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  if (isAuth) {
+    return <Navigate to='/' replace />;
+  }
+
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    dispatch(registerUser({ name, email, password }));
+    dispatch(clearError());
+    const action = await dispatch(
+      registerUser({ name: userName, email, password })
+    );
+    if (registerUser.fulfilled.match(action)) {
+      navigate('/', { replace: true });
+    }
   };
 
   return (
     <RegisterUI
-      errorText=''
+      userName={userName}
+      setUserName={setUserName}
       email={email}
-      name={name}
+      setEmail={setEmail}
       password={password}
-      handleChange={handleChange}
+      setPassword={setPassword}
       handleSubmit={handleSubmit}
+      errorText={error}
+      isLoading={isLoading}
     />
   );
 };
