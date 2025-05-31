@@ -1,9 +1,9 @@
-import { FC, useEffect } from 'react';
-import { useSelector, useDispatch } from '../../services/store';
-import { fetchFeed } from '../../services/slices/feedSlice';
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
-import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchFeed } from '../../services/slices/feed';
+import { fetchIngredients } from '../../services/slices/ingredients';
 
 export const Feed: FC = () => {
   const dispatch = useDispatch();
@@ -17,17 +17,12 @@ export const Feed: FC = () => {
     dispatch(fetchIngredients());
   }, [dispatch]);
 
-  const handleGetFeeds = () => {
+  const getFeeds = () => {
     dispatch(fetchFeed());
   };
 
-  if (isLoading) {
-    return <Preloader />;
-  }
+  if (isLoading) return <Preloader />;
+  if (error) return <div>Произошла ошибка загрузки данных: {error}</div>;
 
-  if (error) {
-    return <p>Ошибка при загрузке: {error}</p>;
-  }
-
-  return <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;
+  return <FeedUI orders={orders} handleGetFeeds={getFeeds} />;
 };

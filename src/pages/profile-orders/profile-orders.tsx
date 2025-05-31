@@ -1,18 +1,24 @@
+import { ProfileOrdersUI } from '@ui-pages';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchUserOrders } from '../../services/slices/userOrdersSlice';
-import { ProfileOrdersUI } from '@ui-pages';
+import { fetchOrders } from '../../services/slices/orders';
+import { Preloader } from '@ui';
 
 export const ProfileOrders: FC = () => {
   const dispatch = useDispatch();
-  const { orders, isLoading, error } = useSelector((s) => s.userOrders);
+  const { orders, isLoading, error } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    dispatch(fetchUserOrders());
+    dispatch(fetchOrders());
   }, [dispatch]);
 
-  if (isLoading) return <p>Загрузка ваших заказов…</p>;
-  if (error) return <p>Ошибка: {error}</p>;
+  if (isLoading) {
+    return <Preloader />;
+  }
+
+  if (error) {
+    return <div>Произошла ошибка загрузки: {error}</div>;
+  }
 
   return <ProfileOrdersUI orders={orders} />;
 };

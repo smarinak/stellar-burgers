@@ -1,7 +1,7 @@
 {
   "success": true,
-  "name": "Fluorescent burger",
+  "name": "Space флюоресцентный бургер",
   "order": {
-    "number": 1234
+    "number": 65536
   }
 }

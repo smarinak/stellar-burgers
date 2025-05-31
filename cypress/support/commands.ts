@@ -6,10 +6,8 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add('addIngredient', (name: string) => {
-  return cy
-    .contains('[data-cy="ingredient-card"]', name)
-    .within(() => {
-      cy.get('button').first().click();          
-    });
-});
+Cypress.Commands.add('addIngredient', (name: string) =>
+  cy.contains('[data-e2e-test="ingredient-card"]', name).within(() => {
+    cy.get('button').first().click();
+  })
+);

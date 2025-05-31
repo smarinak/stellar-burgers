@@ -18,20 +18,34 @@
   display: flex;
   text-decoration: none;
   color: var(--text-inactive-color);
+  cursor: pointer;
+  transition: 200ms opacity;
 }
 
-.link_active {
-  color: var(--text-primary-color);
+.link:not(.link_active):hover {
+  opacity: 0.8;
 }
 
 .link_position_last {
   display: flex;
   justify-content: flex-end;
   flex-basis: 35%;
+  color: var(--text-inactive-color);
+  cursor: pointer;
+  transition: 200ms opacity;
+}
+
+.link_position_last:not(.link_active):hover {
+  opacity: 0.8;
+}
+
+.link_active {
+  color: var(--text-primary-color);
 }
 
 .logo {
   display: flex;
   align-items: center;
   margin: 0 auto;
+  cursor: pointer;
 }

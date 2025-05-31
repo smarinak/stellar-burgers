@@ -1,10 +1,11 @@
 import '../../index.css';
 import styles from './app.module.css';
-import { useDispatch } from '../../services/store';
-import { fetchUser } from '../../services/slices/authSlice';
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 
+import { useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from '../../../src/services/store';
+import { fetchUser } from '../../../src/services/slices/auth/';
+import { TLocationState } from './type';
 import {
   ConstructorPage,
   Feed,
@@ -16,19 +17,21 @@ import {
   Register,
   ResetPassword
 } from '@pages';
-
 import {
   AppHeader,
-  Modal,
   IngredientDetails,
+  Modal,
   OrderInfo,
   ProtectedRoute
 } from '@components';
 
-const App: React.FC = () => {
+const App = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const background = (location.state as any)?.background;
+  const background = (location.state as TLocationState)?.background;
+
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
@@ -41,18 +44,20 @@ const App: React.FC = () => {
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
-        <Route element={<ProtectedRoute guestOnly />}>
+
+        <Route element={<ProtectedRoute forNotAuthUser />}>
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/reset-password' element={<ResetPassword />} />
         </Route>
+
         <Route element={<ProtectedRoute />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/profile/orders' element={<ProfileOrders />} />
           <Route path='/profile/orders/:number' element={<OrderInfo />} />
         </Route>
-        <Route path='/feed/:number' element={<OrderInfo />} />
+
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
@@ -61,10 +66,7 @@ const App: React.FC = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal
-                onClose={() => window.history.back()}
-                title='Детали ингредиента'
-              >
+              <Modal title='Детали ингредиента' onClose={() => navigate(-1)}>
                 <IngredientDetails />
               </Modal>
             }
@@ -72,10 +74,7 @@ const App: React.FC = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal
-                onClose={() => window.history.back()}
-                title='Информация о заказе'
-              >
+              <Modal title='Информация о заказе' onClose={() => navigate(-1)}>
                 <OrderInfo />
               </Modal>
             }
@@ -83,10 +82,7 @@ const App: React.FC = () => {
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal
-                onClose={() => window.history.back()}
-                title='Информация о заказе'
-              >
+              <Modal title='Информация о заказе' onClose={() => navigate(-1)}>
                 <OrderInfo />
               </Modal>
             }
@@ -97,8 +93,4 @@ const App: React.FC = () => {
   );
 };
 
-export default () => (
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
-);
+export default App;

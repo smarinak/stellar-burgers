@@ -1,43 +1,39 @@
-import React, { FC, SyntheticEvent, useState } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
+import { FC, SyntheticEvent, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { RegisterUI } from '@ui-pages';
-import { registerUser, clearError } from '../../services/slices/authSlice';
+import { useDispatch, useSelector } from '../../services/store';
+import { registerUser, clearError } from '../../services/slices/auth';
 
 export const Register: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoading, error, isAuth } = useSelector((state) => state.auth);
+  const { isAuth, isLoading, error } = useSelector((state) => state.auth);
 
-  const [userName, setUserName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  if (isAuth) {
-    return <Navigate to='/' replace />;
-  }
+  if (isAuth) return <Navigate to='/' replace />;
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+
     dispatch(clearError());
-    const action = await dispatch(
-      registerUser({ name: userName, email, password })
-    );
-    if (registerUser.fulfilled.match(action)) {
-      navigate('/', { replace: true });
-    }
+
+    const action = await dispatch(registerUser({ name, email, password }));
+    if (registerUser.fulfilled.match(action)) navigate('/', { replace: true });
   };
 
   return (
     <RegisterUI
-      userName={userName}
-      setUserName={setUserName}
-      email={email}
-      setEmail={setEmail}
-      password={password}
-      setPassword={setPassword}
-      handleSubmit={handleSubmit}
       errorText={error}
+      email={email}
+      userName={name}
+      password={password}
+      setEmail={setEmail}
+      setPassword={setPassword}
+      setUserName={setName}
+      handleSubmit={handleSubmit}
       isLoading={isLoading}
     />
   );

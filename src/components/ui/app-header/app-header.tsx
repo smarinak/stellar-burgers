@@ -1,58 +1,67 @@
 import React, { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './app-header.module.css';
+import { TAppHeaderUIProps } from './type';
 import {
   BurgerIcon,
   ListIcon,
   Logo,
   ProfileIcon
 } from '@zlden/react-developer-burger-ui-components';
-import { TAppHeaderUIProps } from './type';
 
 export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isConstructorPage = location.pathname === '/';
+  const isFeedPage = location.pathname.startsWith('/feed');
+
+  const profilePagePrefixes = [
+    '/profile',
+    '/login',
+    '/register',
+    '/forgot-password',
+    '/reset-password'
+  ];
+  const isProfilePage = profilePagePrefixes.some((p) =>
+    location.pathname.startsWith(p)
+  );
 
   return (
     <header className={styles.header}>
       <nav className={`${styles.menu} p-4`}>
         <div className={styles.menu_part_left}>
           <div
-            className={styles.link}
             onClick={() => navigate('/')}
-            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            className={`${styles.link} ${isConstructorPage ? styles.link_active : ''}`}
           >
-            <BurgerIcon type='primary' />
-            <span className='text text_type_main-default ml-2 mr-10'>
+            <BurgerIcon type={isConstructorPage ? 'primary' : 'secondary'} />
+            <p className='text text_type_main-default ml-2 mr-10'>
               Конструктор
-            </span>
+            </p>
           </div>
+
           <div
-            className={styles.link}
             onClick={() => navigate('/feed')}
-            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            className={`${styles.link} ${isFeedPage ? styles.link_active : ''}`}
           >
-            <ListIcon type='primary' />
-            <span className='text text_type_main-default ml-2'>
-              Лента заказов
-            </span>
+            <ListIcon type={isFeedPage ? 'primary' : 'secondary'} />
+            <p className='text text_type_main-default ml-2'>Лента заказов</p>
           </div>
         </div>
-        <div
-          className={styles.logo}
-          onClick={() => navigate('/')}
-          style={{ cursor: 'pointer' }}
-        >
+
+        <div onClick={() => navigate('/')} className={styles.logo}>
           <Logo className='' />
         </div>
+
         <div
-          className={styles.link_position_last}
-          onClick={() => navigate('/profile')}
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          onClick={() => navigate('profile')}
+          className={`${styles.link_position_last} ${isProfilePage ? styles.link_active : ''}`}
         >
-          <ProfileIcon type='primary' />
-          <span className='text text_type_main-default ml-2'>
+          <ProfileIcon type={isProfilePage ? 'primary' : 'secondary'} />
+          <p className='text text_type_main-default ml-2'>
             {userName || 'Личный кабинет'}
-          </span>
+          </p>
         </div>
       </nav>
     </header>
