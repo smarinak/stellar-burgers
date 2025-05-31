@@ -7,6 +7,7 @@ import {
 import styles from '../common.module.css';
 import { Link } from 'react-router-dom';
 import { RegisterUIProps } from './type';
+import { Preloader } from '@ui';
 
 export const RegisterUI: FC<RegisterUIProps> = ({
   errorText,
@@ -16,7 +17,8 @@ export const RegisterUI: FC<RegisterUIProps> = ({
   password,
   setPassword,
   userName,
-  setUserName
+  setUserName,
+  isLoading
 }) => (
   <main className={styles.container}>
     <div className={`pt-6 ${styles.wrapCenter}`}>
@@ -34,9 +36,10 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setUserName(e.target.value)}
               value={userName}
               name='name'
-              error={false}
+              error={!!errorText}
               errorText=''
               size='default'
+              disabled={isLoading}
             />
           </div>
           <div className='pb-6'>
@@ -46,9 +49,10 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               name={'email'}
-              error={false}
-              errorText=''
+              error={!!errorText}
+              errorText={errorText || ''}
               size={'default'}
+              disabled={isLoading}
             />
           </div>
           <div className='pb-6'>
@@ -56,11 +60,17 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               name='password'
+              disabled={isLoading}
             />
           </div>
           <div className={`pb-6 ${styles.button}`}>
-            <Button type='primary' size='medium' htmlType='submit'>
-              Зарегистрироваться
+            <Button
+              type='primary'
+              size='medium'
+              htmlType='submit'
+              disabled={isLoading}
+            >
+              {isLoading ? <Preloader /> : 'Зарегистрироваться'}
             </Button>
           </div>
           {errorText && (
